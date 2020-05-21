@@ -20,8 +20,26 @@ app.get('/hello',function(req,res){
   res.send('Hello World!');
 });
 
+let options={
+  //'agent':new ProxyAgent('socks5://127.0.0.1:1086'),
+  'target':config.get('target'), // 目标服务器 host
+  'changeOrigin':true,               // 默认false，是否需要改变原始主机头为目标URL
+  'ws':true,                         // 是否代理websockets
+  'pathRewrite':{
+    //"^/api/old-path" : "/api/new-path",     // 重写请求，比如我们源访问的是api/old-path，那么请求会被解析为/api/new-path
+    //"^/api/remove/path" : "/path"           // 同上
+  },
+  'router':{
+    // 如果请求主机 == "dev.localhost:3000",
+    // 重写目标服务器 "http://www.example.org" 为 "http://localhost:8000"
+    //"dev.localhost:3000" : "http://localhost:8000"
+  }
+};
+if(config.get('agent')){
+  options.agent=new ProxyAgent(config.get('agent'));
+}
 
-let proxy=createProxyMiddleware(config.get('options'));
+let proxy=createProxyMiddleware(options);
 
 app.use('/',proxy);
 
