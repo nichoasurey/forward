@@ -46,20 +46,17 @@ app.use('/user',require('./routes/user'));
 if(config.get('agent')){
   options.agent=new ProxyAgent(config.get('agent'));
 }
+options.onError=function (err, req, res) {
+  console.log('err',err);
+};
+options.onProxyRes=function (proxyRes, req, res) {
+  console.log('RAW Response from the target', JSON.stringify(proxyRes.headers, true, 2));
+};
 
 let proxy=createProxyMiddleware(options);
 
 app.use('/',proxy);
 
-proxy.on('error', function (err, req, res) {
-  // 输出空白响应数据
-  console.log('err',err);
-  console.log('req',req);
-
-});
-proxy.on('proxyRes', function (proxyRes, req, res) {
-  console.log('RAW Response from the target', JSON.stringify(proxyRes.headers, true, 2));
-});
 
 let port=config.get('port');
 app.listen(port,function(){
