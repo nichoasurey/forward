@@ -36,8 +36,8 @@ let options={
     //"dev.localhost:3000" : "http://localhost:8000"
   }
 };
-app.get('/hello', function (req, res) {
-  res.send('Hello World!')
+app.get('/test', function (req, res) {
+  res.send('test!')
 });
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
