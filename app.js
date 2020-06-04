@@ -1,6 +1,7 @@
 const express=require('express');
 
 const app                    =express();
+const path                   =require('path');
 const config                 =require('config');
 const moment                 =require('moment');
 const ProxyAgent             =require('proxy-agent');
@@ -35,6 +36,10 @@ let options={
     //"dev.localhost:3000" : "http://localhost:8000"
   }
 };
+app.set('views',path.join(__dirname,'views'));
+app.set('view engine','ejs');
+app.use('/user',require('./routes/user'));
+
 if(config.get('agent')){
   options.agent=new ProxyAgent(config.get('agent'));
 }
