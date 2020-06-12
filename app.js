@@ -4,7 +4,6 @@ const app                    =express();
 const path                   =require('path');
 const config                 =require('config');
 const moment                 =require('moment');
-const ProxyAgent             =require('proxy-agent');
 const {createProxyMiddleware}=require('http-proxy-middleware');
 
 //////////////////////////////////////////////////////
@@ -42,29 +41,6 @@ app.get('/test', function (req, res) {
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
 app.use('/user',require('./routes/user'));
-
-if(config.get('agent')){
-  options.agent=new ProxyAgent(config.get('agent'));
-}
-options.onError=function (err, req, res) {
-  console.log('onError==================================================');
-  console.log('err',err);
-};
-options.onProxyReq=function (proxyRes, req, res) {
-  console.log('onProxyReq==================================================');
-  console.log('RAW Response from the target', JSON.stringify(proxyRes.headers, true, 2));
-};
-options.onProxyReqWs=function (proxyReq, req, socket, options, head) {
-  console.log('onProxyReqWs==================================================');
-  console.log('proxyReq',proxyReq);
-  console.log('socket',socket);
-  console.log('options',options);
-  console.log('head',head);
-};
-options.onProxyRes=function (proxyRes, req, res) {
-  console.log('onProxyRes==================================================');
-  console.log('RAW Response from the target', JSON.stringify(proxyRes.headers, true, 2));
-};
 
 let proxy=createProxyMiddleware(options);
 
